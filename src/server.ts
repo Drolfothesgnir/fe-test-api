@@ -3,7 +3,7 @@ import express from 'express';
 import { faker } from '@faker-js/faker';
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 interface Product {
   id: number;
