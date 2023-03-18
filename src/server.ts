@@ -37,6 +37,10 @@ app.get('/products', (req, res) => {
   res.json(products);
 });
 
+app.get('*', (_, res) => {
+  res.send("hello")
+})
+
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
