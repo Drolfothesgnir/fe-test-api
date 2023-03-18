@@ -1,9 +1,22 @@
 
-import express from 'express';
 import { faker } from '@faker-js/faker';
+import jsonServer from 'json-server'
 
-const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 4000;
+const nProducts = process.env.COUNT || "20"
+const db = {
+  products: generateProducts(parseInt(nProducts))
+}
+
+const server = jsonServer.create()
+const router = jsonServer.router(db)
+const middlewares = jsonServer.defaults()
+
+server.use(middlewares)
+server.use(router)
+server.listen(port, () => {
+  console.log('JSON Server is running')
+})
 
 interface Product {
   id: number;
@@ -13,7 +26,7 @@ interface Product {
   imageUrl: string;
 }
 
-const generateProducts = (count: number): Product[] => {
+function generateProducts (count: number): Product[] {
   const products: Product[] = [];
 
   for (let i = 0; i < count; i++) {
@@ -30,17 +43,3 @@ const generateProducts = (count: number): Product[] => {
 
   return products;
 };
-
-app.get('/products', (req, res) => {
-  const count = parseInt(req.query.count as string, 10) || 10;
-  const products = generateProducts(count);
-  res.json(products);
-});
-
-app.get('*', (_, res) => {
-  res.send("hello")
-})
-
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-});
