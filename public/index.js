@@ -14,10 +14,10 @@ var server = json_server_1.default.create();
 var router = json_server_1.default.router(db);
 var middlewares = json_server_1.default.defaults();
 server.use(middlewares);
-server.use(router);
-server.get('*', function (_, res) {
-    res.send("hello");
+server.get('/echo', function (req, res) {
+    res.jsonp(req.query);
 });
+server.use(router);
 server.listen(port, function () {
     console.log('JSON Server is running');
 });
