@@ -6,9 +6,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node dist/server.js",
+    "postinstall": "tsc",
     "watch": "tsc --watch",
     "watch:js": "nodemon dist/server.js",
     "dev": "concurrently \"npm:watch\" \"npm:watch:js\"",
+    "deploy": "git add . && git commit -m Heroku && git push heroku master",
     "build": "tsc"
   },
   "keywords": [],
@@ -23,5 +25,6 @@
   },
   "dependencies": {
     "express": "^4.18.2"
-  }
+  },
+  "engines": { "node": "v16.17.0" }
 }
