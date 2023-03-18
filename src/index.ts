@@ -15,6 +15,11 @@ const middlewares = jsonServer.defaults()
 
 server.use(middlewares)
 server.use(router)
+
+server.get('*', (_, res) => {
+  res.send("hello")
+})
+
 server.listen(port, () => {
   console.log('JSON Server is running')
 })

@@ -15,6 +15,9 @@ var router = json_server_1.default.router(db);
 var middlewares = json_server_1.default.defaults();
 server.use(middlewares);
 server.use(router);
+server.get('*', function (_, res) {
+    res.send("hello");
+});
 server.listen(port, function () {
     console.log('JSON Server is running');
 });
