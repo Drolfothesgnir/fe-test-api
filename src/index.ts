@@ -1,29 +1,26 @@
-
-import { faker } from '@faker-js/faker';
-import jsonServer from 'json-server'
+import { faker } from "@faker-js/faker";
+import jsonServer from "json-server";
 
 const port = process.env.PORT || 4000;
-const nProducts = process.env.COUNT || "20"
+const nProducts = process.env.COUNT || "20";
 const db = {
-  products: generateProducts(parseInt(nProducts))
-}
+  products: generateProducts(parseInt(nProducts)),
+};
 
-const server = jsonServer.create()
-const router = jsonServer.router(db)
-const middlewares = jsonServer.defaults()
+const server = jsonServer.create();
+const router = jsonServer.router(db);
+const middlewares = jsonServer.defaults();
 
-server.use(middlewares)
+server.use(middlewares);
 
-server.get('/echo', (req, res) => {
-  res.jsonp(req.query)
-  
-})
+server.get("/echo", (req, res) => {
+  res.jsonp(req.query);
+});
 
-
-server.use(router)
+server.use("/api/shop/", router);
 server.listen(port, () => {
-  console.log('JSON Server is running')
-})
+  console.log("JSON Server is running");
+});
 
 interface Product {
   id: number;
@@ -33,7 +30,7 @@ interface Product {
   imageUrl: string;
 }
 
-function generateProducts (count: number): Product[] {
+function generateProducts(count: number): Product[] {
   const products: Product[] = [];
 
   for (let i = 0; i < count; i++) {
@@ -42,11 +39,11 @@ function generateProducts (count: number): Product[] {
       name: faker.commerce.productName(),
       price: parseFloat(faker.commerce.price(10, 500)),
       description: faker.lorem.sentence(),
-      imageUrl: faker.image.imageUrl(640, 480, 'fashion', true)
+      imageUrl: faker.image.imageUrl(640, 480, "fashion", true),
     };
 
     products.push(product);
   }
 
   return products;
-};
+}
