@@ -25,9 +25,13 @@ interface Product {
   availability: boolean;
   rating: number;
 }
+const products = generateProducts(parseInt(nProducts));
 
 const db = {
-  products: generateProducts(parseInt(nProducts)),
+  products,
+  categories: getPropList(products, "categories"),
+  colors: getPropList(products, "color"),
+  brands: getPropList(products, 'brand')
 };
 
 const server = jsonServer.create();
@@ -59,8 +63,8 @@ function generateProducts(count: number): Product[] {
       color: faker.color.human(),
       categories: generateProductTags(),
       brand: faker.company.name(),
-      availability: !!BernoulliDistribution(0.7),
-      rating: +(Math.random() * 5).toPrecision(2)
+      availability: !!bernRandomValue(0.7),
+      rating: +(Math.random() * 5).toPrecision(2),
     };
 
     products.push(product);
@@ -80,7 +84,7 @@ function generateProductTags() {
   return result;
 }
 
-function discreteProbDist<T>(outcomes: T[], probabilities: number[]): T {
+function discreteRandomValue<T>(outcomes: T[], probabilities: number[]): T {
   // Check that the arrays have the same length
   if (outcomes.length !== probabilities.length) {
     throw new Error("The arrays must have the same length");
@@ -108,10 +112,23 @@ function discreteProbDist<T>(outcomes: T[], probabilities: number[]): T {
   throw new Error("Error generating discrete probability distribution");
 }
 
-function BernoulliDistribution(p: number) {
+function bernRandomValue(p: number) {
   if (p < 0 || p > 1) {
-    throw new Error("p must be between 0 and 1")
+    throw new Error("p must be between 0 and 1");
   }
 
-  return discreteProbDist([1, 0], [p, 1 - p])
+  return discreteRandomValue([1, 0], [p, 1 - p]);
+}
+
+function getPropList(arr: Product[], prop: keyof Product) {
+  const mapped = arr.map((item) => item[prop]);
+  const isObj = typeof mapped[0] === "object";
+  let reduced = mapped;
+  if (isObj) {
+    reduced = (mapped as CategorySet[])
+      .map((item) => Object.keys(item))
+      .reduce((acc, item) => acc.concat(item));
+  }
+  const set = new Set(reduced);
+  return Array.from(set.values());
 }
