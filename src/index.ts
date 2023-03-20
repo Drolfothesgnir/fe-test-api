@@ -22,7 +22,7 @@ interface Product {
   color: string;
   categories: CategorySet;
   brand: string;
-  availability: boolean;
+  available: boolean;
   rating: number;
 }
 const products = generateProducts(parseInt(nProducts));
@@ -63,7 +63,7 @@ function generateProducts(count: number): Product[] {
       color: faker.color.human(),
       categories: generateProductTags(),
       brand: faker.company.name(),
-      availability: !!bernRandomValue(0.7),
+      available: !!bernRandomValue(0.7),
       rating: +(Math.random() * 5).toPrecision(2),
     };
 
