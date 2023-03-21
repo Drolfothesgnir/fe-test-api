@@ -11,7 +11,7 @@ const tagTypes = [
   faker.commerce.productMaterial,
 ];
 
-type CategorySet = { [key: string]: boolean };
+type CategorySet = Record<string, boolean>;
 
 interface Product {
   id: number;
@@ -50,20 +50,29 @@ server.listen(port, () => {
   console.log("JSON Server is running");
 });
 
+function generateBrands(count:number) {
+  const result: string[] = Array.from({ length: count})
+  for (let i = 0; i < count; i++) {
+    result[i] = generateBrandName()
+  }
+  return result
+}
+
 function generateProducts(count: number): Product[] {
   const products: Product[] = [];
+  const brands = generateBrands(30);
 
   for (let i = 0; i < count; i++) {
     const product: Product = {
       id: i + 1,
       name: faker.commerce.productName(),
-      price: parseFloat(faker.commerce.price(10, 500)),
+      price: parseFloat(faker.commerce.price(120, 500000)),
       description: faker.commerce.productDescription(),
       imageUrl: faker.image.fashion(640, 480, true),
       color: faker.color.human(),
       categories: generateProductTags(),
-      brand: faker.company.name(),
-      available: !!bernRandomValue(0.7),
+      brand: faker.helpers.arrayElement(brands),
+      available: !!faker.helpers.maybe(() => true, {probability: 0.7}),
       rating: +(Math.random() * 5).toPrecision(2),
     };
 
@@ -84,42 +93,6 @@ function generateProductTags() {
   return result;
 }
 
-function discreteRandomValue<T>(outcomes: T[], probabilities: number[]): T {
-  // Check that the arrays have the same length
-  if (outcomes.length !== probabilities.length) {
-    throw new Error("The arrays must have the same length");
-  }
-
-  // Calculate the cumulative probabilities
-  const cumulativeProbs: number[] = [];
-  let sum = 0;
-  for (let i = 0; i < probabilities.length; i++) {
-    sum += probabilities[i];
-    cumulativeProbs.push(sum);
-  }
-
-  // Generate a random number between 0 and 1
-  const rand = Math.random();
-
-  // Find the outcome that corresponds to the random number
-  for (let i = 0; i < cumulativeProbs.length; i++) {
-    if (rand < cumulativeProbs[i]) {
-      return outcomes[i];
-    }
-  }
-
-  // This should never happen
-  throw new Error("Error generating discrete probability distribution");
-}
-
-function bernRandomValue(p: number) {
-  if (p < 0 || p > 1) {
-    throw new Error("p must be between 0 and 1");
-  }
-
-  return discreteRandomValue([1, 0], [p, 1 - p]);
-}
-
 function getPropList(arr: Product[], prop: keyof Product) {
   const mapped = arr.map((item) => item[prop]);
   const isObj = typeof mapped[0] === "object";
@@ -131,4 +104,19 @@ function getPropList(arr: Product[], prop: keyof Product) {
   }
   const set = new Set(reduced);
   return Array.from(set.values());
+}
+
+function generateBrandName() {
+  return faker.helpers.arrayElement([
+    faker.company.name,
+    faker.hacker.abbreviation,
+    faker.vehicle.manufacturer,
+    () => `${capitalize(faker.company.bsAdjective())} ${faker.company.bsNoun()}`,
+    () => 'Rasengan inc.',
+    () => 'Chidori Systems'
+  ])()
+}
+
+function capitalize(str:string) {
+  return str.charAt(0).toUpperCase() + str.slice(1)
 }
