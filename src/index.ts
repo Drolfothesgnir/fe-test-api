@@ -31,7 +31,7 @@ const db = {
   products,
   categories: getPropList(products, "categories"),
   colors: getPropList(products, "color"),
-  brands: getPropList(products, 'brand')
+  brands: getPropList(products, "brand"),
 };
 
 const server = jsonServer.create();
@@ -50,12 +50,12 @@ server.listen(port, () => {
   console.log("JSON Server is running");
 });
 
-function generateBrands(count:number) {
-  const result: string[] = Array.from({ length: count})
+function generateBrands(count: number) {
+  const result: string[] = Array.from({ length: count });
   for (let i = 0; i < count; i++) {
-    result[i] = generateBrandName()
+    result[i] = generateBrandName();
   }
-  return result
+  return result;
 }
 
 function generateProducts(count: number): Product[] {
@@ -72,7 +72,7 @@ function generateProducts(count: number): Product[] {
       color: faker.color.human(),
       categories: generateProductTags(),
       brand: faker.helpers.arrayElement(brands),
-      available: !!faker.helpers.maybe(() => true, {probability: 0.7}),
+      available: !!faker.helpers.maybe(() => true, { probability: 0.7 }),
       rating: +(Math.random() * 5).toPrecision(2),
     };
 
@@ -111,12 +111,13 @@ function generateBrandName() {
     faker.company.name,
     faker.hacker.abbreviation,
     faker.vehicle.manufacturer,
-    () => `${capitalize(faker.company.bsAdjective())} ${faker.company.bsNoun()}`,
-    () => 'Rasengan inc.',
-    () => 'Chidori Systems'
-  ])()
+    () =>
+      `${capitalize(faker.company.bsAdjective())} ${faker.company.bsNoun()}`,
+    () => "Rasengan inc.",
+    () => "Chidori Systems",
+  ])();
 }
 
-function capitalize(str:string) {
-  return str.charAt(0).toUpperCase() + str.slice(1)
+function capitalize(str: string) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
 }
